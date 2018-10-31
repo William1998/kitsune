@@ -11,7 +11,7 @@ from django.db.models.signals import pre_delete
 from django.utils import translation
 from django.utils.http import urlencode, is_safe_url
 
-import ratelimit.helpers
+from ratelimit.utils import is_ratelimited as rl_is_ratelimited
 
 from kitsune.sumo import paginator
 from kitsune.journal.models import Record
@@ -318,8 +318,9 @@ def is_ratelimited(request, name, rate, method=['POST'], skip_if=lambda r: False
     if skip_if(request) or request.user.has_perm('sumo.bypass_ratelimit'):
         request.limited = False
     else:
-        ratelimit.helpers.is_ratelimited(
-            request, increment=True, ip=False, rate=rate, keys=user_or_ip(name))
+        # TODO: make sure this still works - may need to modify user_or_ip function
+        rl_is_ratelimited(
+            request, increment=True, rate=rate, key=user_or_ip(name))
         if request.limited:
             if hasattr(request, 'user') and request.user.is_authenticated():
                 key = 'user "{}"'.format(request.user.username)

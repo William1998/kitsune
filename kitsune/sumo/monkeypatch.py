@@ -4,8 +4,8 @@ from functools import wraps
 from django.forms import fields
 from django.forms import widgets
 
-from elasticutils import get_es as base_get_es
-from elasticutils.contrib import django as elasticutils_django
+#from elasticutils import get_es as base_get_es
+#from elasticutils.contrib import django as elasticutils_django
 
 
 _has_been_patched = False
@@ -122,7 +122,7 @@ def patch():
 
         defaults.update(overrides)
         return base_get_es(**defaults)
-    elasticutils_django.get_es = get_es
+    # elasticutils_django.get_es = get_es
 
     def S_get_es(self, default_builder=get_es):
         """Returns the elasticsearch Elasticsearch object to use.
@@ -132,7 +132,7 @@ def patch():
 
         """
         return super(elasticutils_django.S, self).get_es(default_builder=default_builder)
-    elasticutils_django.S.get_es = S_get_es
+    #elasticutils_django.S.get_es = S_get_es
 
     _has_been_patched = True
 
